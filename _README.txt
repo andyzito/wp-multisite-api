@@ -1,0 +1,3 @@
+The "iiisms" directory on workbench/var/www/libkit contains the file sms.php, which handles the sending of the text message for the "text the call number" feature in the Library catalog. (The message content is generated via Javascript in catalog records.)
+
+The script does not actually send a text message; it sends an email to the text message gateway for various mobile phone service providers.  Should the gateway address change for any of these providers, the script would have to be edited.
