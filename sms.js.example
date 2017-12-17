@@ -1,0 +1,163 @@
+// JavaScript Document
+
+// The route for the SMS REST API.
+var smsurl = "https://example.edu/wp-json/iiisms/v1/send?";
+
+// This function shows the SMS layer and creates the form.
+function showsms() {
+	try {
+		var title = '';		// we'll save the title here
+		var debug = 0;		// Enable this to show alerts.
+  		var f = document.getElementById('bib_detail');
+
+		// Find the title of the item.
+		try {
+			// We have to iterate through every TR b/c we can't get to the title otherwise.
+			var tr = document.getElementsByTagName('TR');
+    			for(i = 0; i < tr.length; i++) {
+				// Get all of the columns.
+      				var xcells=tr[i].getElementsByTagName('TD');
+				// Ff the row has 2 columns and the first one has the text of Title.
+				if (xcells.length == 2 && xcells[0].innerHTML == "Title") {
+					// Strip out all of the HTML so we just have text.
+        				title = xcells[1].innerHTML.replace(/(<([^>]+)>)/ig,"");
+	    				if (debug > 0) alert('found title: ' + title);
+				}
+			}
+		} catch (e) {}
+
+		// This is the DIV that we're going to put the text into.
+		var sms = document.getElementById('sms');
+		// We'll load the 'out' variable with all the html and then put it into the sms div.
+		var itms = document.getElementById('bib_items'); // Get the ITEM table.
+ 		var tr = itms.getElementsByTagName('TR'); // Get each row.
+		for(i = 1; i < tr.length && i < 6; i++) {
+			var xcells=tr[i].getElementsByTagName('TD'); // Get each cell.
+			// If there's only 3 cells (like our ITEM table).
+			if (xcells.length == 3) {
+				var avail = xcells[2].innerHTML.match(/AVAILABLE|LIB USE ONLY/);
+				if (!avail && tr.length == 2){
+					var out = '<h3 style="font-size:150%;">This item is not available!</h3><p><strong>NOTE:</strong> Carrier charges may apply if your cell phone service plan does not include free text messaging.</p>';
+				} else {
+					var out = "<h3>Send the title, location, and call number of this item to your cell.</h3><p><strong>NOTE:</strong> Carrier charges may apply if your cell phone service plan does not include free text messaging.</p>";
+				}
+			}
+		}
+
+		// Build the form.
+		out +="<form name='sms_form' id='sms_form' method='post'>";
+		out += '<input type=\"hidden\" name=\"title\" value=\"'+title+'\">'; // Dump the title into a hidden form variable.
+		out += '<fieldset class="phoneinfo"><legend>Phone information: </legend><label>Your cell number:</label><input name="phone" type="text" maxlength="10"> <span class="eg">(Enter the full 10 digits - no spaces, no dashes.)</span>'; // Input for the phone number.
+		out += "</fieldset>";
+		out += "<fieldset><legend>Item information: </legend><label> "+ title +":</label><ol id='smslist'>";
+
+		var itms = document.getElementById('bib_items'); // Get the ITEM table.
+		var tr = itms.getElementsByTagName('TR'); // Get each row.
+		for(i = 1; i < tr.length && i < 6; i++) {
+			var xcells=tr[i].getElementsByTagName('TD'); // Get each cell.
+			// If there's only 3 cells (like our ITEM table).
+			if (xcells.length == 3) {
+				var loc = xcells[0].innerHTML.replace(/(<([^>]+)>|&nbsp;)/ig,""); // Get the location (remove tags).
+				var callLinks = xcells[1].getElementsByTagName("a"); // Get the call number without extras.
+				var call = callLinks[0].innerHTML.replace(/(<([^>]+)>|&nbsp;)/ig,"");
+				var status = xcells[2].innerHTML.replace(/(<([^>]+)>|&nbsp;)/ig,""); // Get the status (remove tags).
+				var chck = '';
+				// If we're on the first row, check it.
+				if (i == 1) {
+					chck = ' checked ';
+				}
+				// Append the input.
+				out += '<li><input '+chck+' type=\"radio\" name=\"loc\" value=\"'+loc+'|'+call+'\">'+loc+' : '+call+' : <span class="smsStatus">'+status+'</span></li>';
+				if (debug > 0) alert('found item: ' + loc + '|' + call + ' | ' + status );
+			}
+		}
+		// Close the list.
+		out += "</ol></fieldset>";
+
+		// Add buttons at bottom; we return false which stops the forms from actually doing anything.
+		out += "<p><input type='submit' onClick='sendSMS();return false;' value='Send text message'> <input id='clearmessage' type='reset' onClick='clearsms();return false;' value='Close'></p>";
+
+		// We use the innerHTML property to actually set the HTML into the page.
+		sms.innerHTML = out+"</form>";
+
+		// Now we make the div visible.
+		sms.style.visibility = 'visible';
+		sms.style.display = 'block';
+
+		// Place the cursor in the phone# field.
+		document.sms_form.phone.focus();
+	} catch (e) {
+		// Hide the SMS buttons on failure.
+		document.getElementById('smsfeatures').style.visibility='hidden';
+		alert('Oops...something about this record doesn\'t agree with the texting mechanism.\nCould be no real call number \(like for an online journal\); could be something else.\nYou\'ll have to write down the call number...like in the good old days.');
+	}
+	return false;
+}
+
+// Trigger the the SMS.
+function sendSMS(location) {
+	var frm = document.sms_form; // Get the SMS form.
+	var phone = frm.phone.value; // Get the phone number.
+	phone = phone.replace(/[^\d]/ig,""); // Remove all non-digit characters.
+	// Require ten characters for now.
+	if (phone.length == 10) {
+		var url = smsurl; // Start creating the URL.
+		url += "&number="+encodeURIComponent(frm.phone.value); // Encode escape number.
+
+		// For each item, get the checked one.
+		for (i=0;i<frm.loc.length;i++) {
+			// If checked, add it to the URL.
+			if (frm.loc[i].checked == true) {
+				url += "&item="+encodeURIComponent(frm.loc[i].value);
+			}
+		}
+		// If just one, should not come to this.
+		if (frm.loc.length == undefined) {
+			url += "&item="+encodeURIComponent(frm.loc.value);
+		}
+
+		var bodyRef = document.getElementsByTagName("body")[0]; //get the bib number out of the <body>, add it to the url
+		var bodyText = bodyRef.innerHTML;
+		var bibNum = bodyText.match(/b[\d]{7}/m);
+		url += "&bib="+bibNum;
+
+		// Now we create a <SCRIPT> tag in the <HEAD> to get the response.
+		var head = document.getElementsByTagName("head")[0];
+		var script = document.createElement('script');
+		script.setAttribute('type','text/javascript');
+		script.setAttribute('src',url);	// The script is actually the remote REST API call.
+		head.appendChild(script); // Append the script.
+	} else {
+		alert('Please enter a valid 10-digit phone number');
+	}
+}
+
+// Clear/hide the SMS DIV. This is called by the included REST API.
+function clearsms() {
+	var sms = document.getElementById('sms');
+	sms.style.visibility = 'hidden';
+	sms.style.display = 'none';
+}
+
+// Get the position of an item, good for putting the SMS form in a useful place.
+function findPos(obj,obj2,lofset,tofset) {
+	var curleft = curtop = 0;
+	if (obj.offsetParent) {
+		curleft = obj.offsetLeft
+		curtop = obj.offsetTop
+		while (obj = obj.offsetParent) {
+			curleft += obj.offsetLeft
+			curtop += obj.offsetTop
+		}
+	}
+	obj2.style.left = curleft+lofset;
+	obj2.style.top = curtop+tofset;
+//	return [curleft,curtop];
+}
+
+// Grab the bib number of the item.
+function getbib() {
+	var buttonBlock = document.getElementById('navigationRow').innerHTML;
+	sms.style.visibility = 'hidden';
+	sms.style.display = 'none';
+}

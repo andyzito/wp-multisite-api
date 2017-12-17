@@ -1,0 +1,13 @@
+{
+  "name": "iiisms",
+  "version": "0.2.0",
+  "main": "Gruntfile.js",
+  "author": "YOUR NAME HERE",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-bump": "^0.8.0",
+    "grunt-wp-i18n": "~0.5.0",
+    "grunt-wp-readme-to-markdown": "~1.0.0"
+  }
+}

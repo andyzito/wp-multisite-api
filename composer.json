@@ -1,0 +1,16 @@
+{
+  "name": "lafayette/iiisms",
+  "description": "Library Catalog SMS",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Charles Fulton",
+      "email": "fultonc@lafayette.edu"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "composer/installers": "^1.0"
+  }
+}
