@@ -155,7 +155,7 @@ function multisite_api_list_sites( WP_REST_Request $request ) {
 
 add_action( 'rest_api_init', function() {
 	register_rest_route( 'multisite/v2', '/list/', array(
-		'methods' => 'GET',
+		'methods' => 'POST',
 		'callback' => 'multisite_api_list_sites',
 		// 'args' => array(
 			// 'number' => array(
