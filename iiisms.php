@@ -140,18 +140,18 @@ function multisite_api_list_sites( WP_REST_Request $request ) {
 
 /**
  * Display the settings form.
- */
-// function multisite_api_settings_page() {
-// 		?>
-// 		<form action='options.php' method='post'>
-// 		<?php
-// 				settings_fields( 'multisite_api_settings_group' );
-// 				do_settings_sections( 'multisite_api_settings_group' );
-// 				submit_button();
-// 		?>
-// 		</form>
-// 		<?php
-// }
+* function multisite_api_settings_page() {
+* 		?>
+* 		<form action='options.php' method='post'>
+* 		<?php
+* 				settings_fields( 'multisite_api_settings_group' );
+* 				do_settings_sections( 'multisite_api_settings_group' );
+* 				submit_button();
+* 		?>
+* 		</form>
+* 		<?php
+* }
+*/
 
 add_action( 'rest_api_init', function() {
 	register_rest_route( 'multisite/v2', '/list/', array(
