@@ -52,9 +52,12 @@ add_action( 'rest_api_init', function() {
 		'methods' => 'POST',
 		'callback' => 'multisite_api_create_site',
 		'args' => array(
-			'number' => array(
+			'name' => array(
 				'default' => false,
 			),
+			'title' => array(
+				'default' => false,
+			)
 			// 'item' => array(
 			// 	'default' => false,
 			// ),
