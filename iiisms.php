@@ -35,8 +35,8 @@ function multisite_api_create_site( WP_REST_Request $request ) {
 
 	$site = get_current_site();
 	$domain = $site->domain;
-	$path = '/' . $params->name;
-	$title = $params->title;
+	$path = '/' . $params['name'];
+	$title = $params['title'];
 	$user_id = 1;
 
 	echo "Attempting to create blog with:\n";
