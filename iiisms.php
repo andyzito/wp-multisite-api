@@ -39,7 +39,7 @@ function multisite_api_create_site( WP_REST_Request $request ) {
 	$title = $params->title;
 	$user_id = 1;
 
-	echo wpmu_create_blog( $domain, $path, $title, $user_id );
+	echo json_encode(wpmu_create_blog( $domain, $path, $title, $user_id ));
 	exit;
 }
 
