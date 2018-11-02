@@ -17,55 +17,15 @@
  * @return boolean
  */
 function multisite_api_list_sites( WP_REST_Request $request ) {
-	// Ensure Twilio is available.
-	if ( ! function_exists( 'twl_send_sms' ) ) {
-		return false;
-	}
-
 	// Get plugin options.
-	$options = get_option( 'multisite_api_settings' );
+	// $options = get_option( 'multisite_api_settings' );
 
 	// Do nothing if we're missing the catalog URL.
-	if ( ! $options['multisite_api_url'] ) {
-		return false;
-	}
+	// if ( ! $options['multisite_api_url'] ) {
+	// 	return false;
+	// }
 
-	// Do nothing if an IP is specified but the wrong IP is given.
-	if ( $options['multisite_api_ip'] && $options['multisite_api_ip'] != $_SERVER['REMOTE_ADDR'] ) {
-		return false;
-	}
-
-	// Setup variables.
-	$sms = array();
-	$sms['number_to'] = $request->get_param( 'number' );
-	if ( ! $sms['number_to'] ) {
-		return false;
-	}
-
-	// Get the title from the bibliographic record.
-	$bib = $request->get_param( 'bib' );
-	if ( ! $bib ) {
-		return false;
-	}
-	$title = multisite_api_get_item_title( $options['multisite_api_url'] . "/record={$bib}" );
-	if ( ! $title ) {
-		return false;
-	}
-
-	// Get the location and call number.
-	$item = $request->get_param( 'item' );
-	if ( ! $item ) {
-		return false;
-	}
-	$item = multisite_api_format_item( $item );
-
-	// Set and send message.
-	$sms['message'] = "{$item} \nTitle: {$title}";
-	$response = twl_send_sms( $sms );
-
-	// Notify the catalog.
-	echo 'clearsms();';
-	echo "alert('Message sent!');";
+	echo "TEST";
 	exit;
 }
 
@@ -197,7 +157,7 @@ add_action( 'rest_api_init', function() {
 	register_rest_route( 'multisite/v2', '/list/', array(
 		'methods' => 'GET',
 		'callback' => 'multisite_api_list_sites',
-		'args' => array(
+		// 'args' => array(
 			// 'number' => array(
 			// 	'default' => false,
 			// ),
@@ -207,11 +167,11 @@ add_action( 'rest_api_init', function() {
 			// 'bib' => array(
 			// 	'default' => false,
 			// ),
-		),
+		// ),
 	) );
 } );
 
-if ( is_admin() ) {
-	add_action( 'admin_menu', 'multisite_api_add_admin_menu' );
-	add_action( 'admin_init', 'multisite_api_settings_init' );
-}
+// if ( is_admin() ) {
+// 	add_action( 'admin_menu', 'multisite_api_add_admin_menu' );
+// 	add_action( 'admin_init', 'multisite_api_settings_init' );
+// }
