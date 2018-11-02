@@ -39,7 +39,20 @@ function multisite_api_create_site( WP_REST_Request $request ) {
 	$title = $params->title;
 	$user_id = 1;
 
-	echo json_encode(wpmu_create_blog( $domain, $path, $title, $user_id ));
+	echo "Attempting to create blog with:\n";
+	echo "  Domain: $domain\n";
+	echo "  Path: $path\n";
+	echo "  Title: $title\n";
+	echo "  Admin ID: $user_id\n";
+
+	$result = wpmu_create_blog( $domain, $path, $title, $user_id );
+
+	if (is_numeric($result)) {
+		echo "Site created! ID: $result";
+	} else {
+		echo "Sorry, site could not be created because...\n";
+		echo json_encode($result);
+	}
 	exit;
 }
 
