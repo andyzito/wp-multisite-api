@@ -72,9 +72,9 @@ class Multisite_API_Controller {
 
 		$site = get_current_site();
 		$domain = $site->domain;
-		$path = '/' . $params['name'];
-		$title = $params['title'];
-		$admin = $params['admin'];
+		$path   = '/' . ltrim( $params['path'], '/\\' );
+		$title  = $params['title'];
+		$admin  = $params['admin'];
 
 		if (!is_numeric($admin)) {
 			$admin = get_user_by('login', $params['admin'])->id;
@@ -117,7 +117,8 @@ class Multisite_API_Controller {
 			exit;
 		}
 
-		wpmu_delete_blog( $site->id, $drop );
+
+		wpmu_delete_blog( $site->blog_id, $drop );
 		exit;
 	}
 
