@@ -19,6 +19,19 @@ class Multisite_API_Controller {
 	}
 
 	public function register_routes() {
+
+		$base_args = array(
+			'path' => array(
+				'default' => false,
+			),
+		);
+
+		$site_exists_args = array_merge( array(
+			'id' => array(
+				'default' => false,
+			)
+		), $base_args );
+
 		register_rest_route( $this->namespace, '/list/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'list_sites'),
@@ -26,32 +39,30 @@ class Multisite_API_Controller {
 		register_rest_route( $this->namespace, '/delete/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'delete_site'),
-			'args' => array(
-				'id' => array(
-					'default' => false,
-				),
-				'path' => array(
-					'default' => false,
-				),
+			'args' => array_merge( array(
 				'drop' => array(
 					'default' => true,
 				)
-			)
+			), $site_exists_args )
 		) );
 		register_rest_route( $this->namespace, '/create/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'create_site'),
-			'args' => array(
-				'path' => array(
-					'default' => false,
-				),
-				'title' => array(
-					'default' => false,
-				),
+			'args' => array_merge( array(
 				'admin' => array(
 					'default' => 1,
 				)
-			),
+			), $site_exists_args )
+		) );
+		register_rest_route( $this->namespace, '/archive/', array(
+			'methods' => 'POST',
+			'callback' => array($this, 'archive_site'),
+			'args' => $site_exists_args
+		) );
+		register_rest_route( $this->namespace, '/unarchive/', array(
+			'methods' => 'POST',
+			'callback' => array($this, 'unarchive_site'),
+			'args' => $site_exists_args
 		) );
 	}
 
