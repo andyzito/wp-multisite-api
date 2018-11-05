@@ -19,11 +19,11 @@ class Multisite_API_Controller {
 	public function register_routes() {
 		register_rest_route( $this->namespace, '/list/', array(
 			'methods' => 'POST',
-			'callback' => 'multisite_api_list_sites',
+			'callback' => array($this, 'list_sites'),
 		) );
 		register_rest_route( $this->namespace, '/delete/', array(
 			'methods' => 'POST',
-			'callback' => 'multisite_api_delete_site',
+			'callback' => array($this, 'delete_site'),
 			'args' => array(
 				'id' => array(
 					'default' => false,
@@ -35,7 +35,7 @@ class Multisite_API_Controller {
 		) );
 		register_rest_route( $this->namespace, '/create/', array(
 			'methods' => 'POST',
-			'callback' => 'multisite_api_create_site',
+			'callback' => array($this, 'create_site'),
 			'args' => array(
 				'name' => array(
 					'default' => false,
@@ -50,7 +50,7 @@ class Multisite_API_Controller {
 		) );
 	}
 
-	public function multisite_api_list_sites( WP_REST_Request $request ) {
+	public function list_sites( WP_REST_Request $request ) {
 		// Get plugin options.
 		// $options = get_option( 'multisite_api_settings' );
 
@@ -63,7 +63,7 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function multisite_api_create_site( WP_REST_Request $request ) {
+	public function create_site( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
 
