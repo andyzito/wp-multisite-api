@@ -81,7 +81,7 @@ class Multisite_API_Controller {
 		echo "  Domain: $domain\n";
 		echo "  Path: $path\n";
 		echo "  Title: $title\n";
-		echo "  Admin ID: $user_id\n";
+		echo "  Admin ID: $admin\n";
 
 		$result = wpmu_create_blog( $domain, $path, $title, $user_id );
 
