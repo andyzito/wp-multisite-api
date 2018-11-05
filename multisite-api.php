@@ -55,6 +55,20 @@ class Multisite_API_Controller {
 		) );
 	}
 
+	private function extract_site( $params ) {
+		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
+			$site = get_blog_details( $params['id'] );
+		} elseif ( array_key_exists( 'path', $params ) && is_string( $params['path'] ) ) {
+			$site = get_blog_details( $params['path'] );
+		}
+
+		if (!$site) {
+			return false;
+		} else {
+			return $site;
+		}
+	}
+
 	public function list_sites( WP_REST_Request $request ) {
 		// Get plugin options.
 		// $options = get_option( 'multisite_api_settings' );
@@ -71,8 +85,7 @@ class Multisite_API_Controller {
 	public function create_site( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
-
-		$site = get_current_site();
+		$site   = get_current_site();
 		$domain = $site->domain;
 		$path   = '/' . ltrim( $params['path'], '/\\' );
 		$title  = $params['title'];
@@ -101,24 +114,37 @@ class Multisite_API_Controller {
 
 	public function delete_site( WP_REST_Request $request ) {
 		$params = $request->get_params();
+		$id     = $params['id'];
+		$path   = $params['path'];
+		$drop   = $params['drop'];
 
-		$site = get_current_site();
-		$id   = $params['id'];
-		$path = $params['path'];
-		$drop = $params['drop'];
+		$site = $this->extract_site( $params );
 
-		if (!is_numeric($id)) {
-			$site = get_blog_details($path);
-			$id = $site->blog_id;
-		}
-
-		if (!is_numeric($id)) {
-			echo "Site not found, nothing deleted.";
-			exit;
-		}
-
-		wpmu_delete_blog( $id, $drop );
+		wpmu_delete_blog( $site->blog_id, $drop );
 		exit;
+	}
+
+	public function archive_site( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$id     = $params['id'];
+		$path   = $params['path'];
+
+		$site = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'archived', 1 );
+		exit;
+	}
+
+	public function unarchive_site( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$id     = $params['id'];
+		$path   = $params['path'];
+
+		$site = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'archived', 0 );
 	}
 
 }
