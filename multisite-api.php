@@ -30,6 +30,9 @@ class Multisite_API_Controller {
 				),
 				'path' => array(
 					'default' => false,
+				),
+				'drop' => array(
+					'default' => true,
 				)
 			)
 		) );
@@ -37,7 +40,7 @@ class Multisite_API_Controller {
 			'methods' => 'POST',
 			'callback' => array($this, 'create_site'),
 			'args' => array(
-				'name' => array(
+				'path' => array(
 					'default' => false,
 				),
 				'title' => array(
@@ -99,8 +102,23 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 
 		$site = get_current_site();
-		// $
+		$id   = $params['id'];
+		$path = $params['path'];
+		$drop = $params['drop'];
 
+		if (is_numeric($id)) {
+			$site = get_blog_details($id);
+		} else {
+			$site = get_blog_details($path);
+		}
+
+		if (!$site) {
+			echo "Site not found, nothing deleted.";
+			exit;
+		}
+
+		wpmu_delete_blog( $site->id, $drop );
+		exit;
 	}
 
 }
