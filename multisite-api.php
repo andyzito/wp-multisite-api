@@ -10,6 +10,8 @@
  * @package         multisite-api
  */
 
+require_once(ABSPATH . 'wp-admin/includes/ms.php');
+
 class Multisite_API_Controller {
 	public function __construct() {
 		$this->namespace = '/multisite/v2';
@@ -98,8 +100,6 @@ class Multisite_API_Controller {
 	}
 
 	public function delete_site( WP_REST_Request $request ) {
-		require_once(get_home_path() . 'wp-admin/includes/ms.php');
-
 		$params = $request->get_params();
 
 		$site = get_current_site();
@@ -117,7 +117,6 @@ class Multisite_API_Controller {
 			echo "Site not found, nothing deleted.";
 			exit;
 		}
-
 
 		wpmu_delete_blog( $site->blog_id, $drop );
 		exit;
