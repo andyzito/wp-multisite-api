@@ -98,6 +98,7 @@ class Multisite_API_Controller {
 	}
 
 	public function delete_site( WP_REST_Request $request ) {
+		require_once(get_home_path() . 'wp-admin/includes/ms.php');
 
 		$params = $request->get_params();
 
