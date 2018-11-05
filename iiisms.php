@@ -37,7 +37,11 @@ function multisite_api_create_site( WP_REST_Request $request ) {
 	$domain = $site->domain;
 	$path = '/' . $params['name'];
 	$title = $params['title'];
-	$user_id = 1;
+    $admin = $params['admin'];
+
+    if (!is_numeric($admin)) {
+        $admin = get_user_by('login', $params['admin']);
+    }
 
 	echo "Attempting to create blog with:\n";
 	echo "  Domain: $domain\n";
@@ -56,12 +60,26 @@ function multisite_api_create_site( WP_REST_Request $request ) {
 	exit;
 }
 
+$namespace = 'multisite/v2';
+
 add_action( 'rest_api_init', function() {
-	register_rest_route( 'multisite/v2', '/list/', array(
+	register_rest_route( $namespace, '/list/', array(
 		'methods' => 'POST',
 		'callback' => 'multisite_api_list_sites',
-	) );
-	register_rest_route( 'multisite/v2', '/create/', array(
+    ) );
+    register_rest_route( $namespace, '/delete/', array(
+		'methods' => 'POST',
+		'callback' => 'multisite_api_delete_site',
+		'args' => array(
+            'id' => array(
+                'default' => false,
+            ),
+            'path' => array(
+                'default' => false,
+            )
+        )
+    ) );
+	register_rest_route( $namespace, '/create/', array(
 		'methods' => 'POST',
 		'callback' => 'multisite_api_create_site',
 		'args' => array(
@@ -70,15 +88,12 @@ add_action( 'rest_api_init', function() {
 			),
 			'title' => array(
 				'default' => false,
-			)
-			// 'item' => array(
-			// 	'default' => false,
-			// ),
-			// 'bib' => array(
-			// 	'default' => false,
-			// ),
+            ),
+            'admin' => array(
+                'default' => 1,
+            )
 		),
-		) );
+    ) );
 } );
 
 // if ( is_admin() ) {
