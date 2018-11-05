@@ -74,7 +74,7 @@ class Multisite_API_Controller {
 		$admin = $params['admin'];
 
 		if (!is_numeric($admin)) {
-			$admin = get_user_by('login', $params['admin']);
+			$admin = get_user_by('login', $params['admin'])->id;
 		}
 
 		echo "Attempting to create blog with:\n";
@@ -92,6 +92,15 @@ class Multisite_API_Controller {
 			echo json_encode($result);
 		}
 		exit;
+	}
+
+	public function delete_site( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+
+		$site = get_current_site();
+		// $
+
 	}
 
 }
