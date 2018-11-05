@@ -107,18 +107,17 @@ class Multisite_API_Controller {
 		$path = $params['path'];
 		$drop = $params['drop'];
 
-		if (is_numeric($id)) {
-			$site = get_blog_details($id);
-		} else {
+		if (!is_numeric($id)) {
 			$site = get_blog_details($path);
+			$id = $site->blog_id;
 		}
 
-		if (!$site) {
+		if (!is_numeric($id)) {
 			echo "Site not found, nothing deleted.";
 			exit;
 		}
 
-		wpmu_delete_blog( $site->blog_id, $drop );
+		wpmu_delete_blog( $id, $drop );
 		exit;
 	}
 
