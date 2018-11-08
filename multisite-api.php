@@ -36,21 +36,21 @@ class Multisite_API_Controller {
 			'methods' => 'POST',
 			'callback' => array($this, 'list_sites'),
 		) );
-		register_rest_route( $this->namespace, '/delete/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'delete_site'),
-			'args' => array_merge( array(
-				'drop' => array(
-					'default' => true,
-				)
-			), $site_exists_args )
-		) );
 		register_rest_route( $this->namespace, '/create/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'create_site'),
 			'args' => array_merge( array(
 				'admin' => array(
 					'default' => 1,
+				)
+			), $site_exists_args )
+		) );
+		register_rest_route( $this->namespace, '/delete/', array(
+			'methods' => 'POST',
+			'callback' => array($this, 'delete_site'),
+			'args' => array_merge( array(
+				'drop' => array(
+					'default' => true,
 				)
 			), $site_exists_args )
 		) );
