@@ -32,10 +32,12 @@ class Multisite_API_Controller {
 			)
 		), $base_args );
 
-		register_rest_route( $this->namespace, '/list/', array(
+		register_rest_route( $this->namespace, '/archive/', array(
 			'methods' => 'POST',
-			'callback' => array($this, 'list_sites'),
+			'callback' => array($this, 'archive_site'),
+			'args' => $site_exists_args
 		) );
+
 		register_rest_route( $this->namespace, '/create/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'create_site'),
@@ -45,6 +47,7 @@ class Multisite_API_Controller {
 				)
 			), $site_exists_args )
 		) );
+
 		register_rest_route( $this->namespace, '/delete/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'delete_site'),
@@ -54,11 +57,12 @@ class Multisite_API_Controller {
 				)
 			), $site_exists_args )
 		) );
-		register_rest_route( $this->namespace, '/archive/', array(
+
+		register_rest_route( $this->namespace, '/list/', array(
 			'methods' => 'POST',
-			'callback' => array($this, 'archive_site'),
-			'args' => $site_exists_args
+			'callback' => array($this, 'list_sites'),
 		) );
+
 		register_rest_route( $this->namespace, '/unarchive/', array(
 			'methods' => 'POST',
 			'callback' => array($this, 'unarchive_site'),
