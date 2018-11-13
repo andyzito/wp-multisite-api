@@ -182,9 +182,6 @@ class Multisite_API_Controller {
 			'fields' => array(
 				'default' => false,
 			),
-			'format' => array(
-				'default' => 'json',
-			),
 			'filter' => array(
 				'default' => false,
 			)
@@ -341,6 +338,12 @@ class Multisite_API_Controller {
 	/**
 	 * Lists all sites in a multisite.
 	 *
+	 * Accepts the following parameters:
+	 *   fields: Fields to return - specifying a single field will retreive a flat array
+	 *   filter: A single filter with format [key]=[val]
+	 *
+	 * For both 'fields' and 'filter', only the default WP site data fields are available.
+	 *
 	 * @param WP_REST_Request A WP REST Request
 	 *
 	 * @return void
@@ -355,8 +358,8 @@ class Multisite_API_Controller {
 
 		if ( $filter ) {
 			$filter = explode( '=', $filter );
-			$sites = array_filter( $sites, function( $s ) {
-				return $sites->{$filter[0]} == $filter[1];
+			$sites = array_filter( $sites, function( $s ) use ( $filter ) {
+				return $s->{$filter[0]} == $filter[1];
 			});
 		}
 
