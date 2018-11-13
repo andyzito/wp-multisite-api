@@ -123,7 +123,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'archived', 1 );
+		$result = update_blog_status( $site->blog_id, 'archived', 1 );
+		if ( $result === 1 ) {
+			echo "Site archived.";
+		} else {
+			echo "Site could not be archived.";
+		}
 		exit;
 	}
 
@@ -162,7 +167,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'deleted', 1 );
+		$result = update_blog_status( $site->blog_id, 'deleted', 1 );
+		if ( $result === 1 ) {
+			echo "Site deactivated.";
+		} else {
+			echo "Site could not be deactivated.";
+		}
 		exit;
 	}
 
@@ -191,7 +201,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'mature', 1 );
+		$result = update_blog_status( $site->blog_id, 'mature', 1 );
+		if ( $result === 1 ) {
+			echo "Site marked as mature.";
+		} else {
+			echo "Site could not be marked as mature.";
+		}
 		exit;
 	}
 
@@ -200,7 +215,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'public', 0 );
+		$result = update_blog_status( $site->blog_id, 'public', 0 );
+		if ( $result === 0 ) {
+			echo "Site is now private.";
+		} else {
+			echo "Site could not be made private.";
+		}
 		exit;
 	}
 
@@ -209,7 +229,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'public', 1 );
+		$result = update_blog_status( $site->blog_id, 'public', 1 );
+		if ( $result === 1 ) {
+			echo "Site is now public.";
+		} else {
+			echo "Site could not be made public.";
+		}
 		exit;
 	}
 
@@ -218,7 +243,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'spam', 1 );
+		$result = update_blog_status( $site->blog_id, 'spam', 1 );
+		if ( $result === 1 ) {
+			echo "Site marked as spam.";
+		} else {
+			echo "Site could not be marked as spam.";
+		}
 		exit;
 	}
 
@@ -227,7 +257,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'archived', 0 );
+		$result = update_blog_status( $site->blog_id, 'archived', 0 );
+		if ( $result === 0 ) {
+			echo "Site unarchived.";
+		} else {
+			echo "Site could not be unarchived.";
+		}
 		exit;
 	}
 
@@ -236,7 +271,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'mature', 0 );
+		$result = update_blog_status( $site->blog_id, 'mature', 0 );
+		if ( $result === 0 ) {
+			echo "Site marked as immature.";
+		} else {
+			echo "Site could not be marked as immature.";
+		}
 		exit;
 	}
 
@@ -245,7 +285,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'unspam', 1 );
+		$result = update_blog_status( $site->blog_id, 'spam', 0 );
+		if ( $result === 0 ) {
+			echo "Site unmarked as spam.";
+		} else {
+			echo "Site could not be unmarked as spam.";
+		}
 		exit;
 	}
 
