@@ -160,7 +160,7 @@ class Multisite_API_Controller {
 	public function command_delete( WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
-		$drop   = $params['drop'];
+		$drop   = ! $params['keep-tables'];
 
 		wpmu_delete_blog( $site->blog_id, $drop );
 		exit;
