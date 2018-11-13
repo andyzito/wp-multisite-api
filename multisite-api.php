@@ -40,7 +40,7 @@ class Multisite_API_Controller {
 	}
 
 	private function register_post_route($name, $baseargs, $addargs=array()) {
-		register_rest_route( $this->namespace, "/$path/", array(
+		register_rest_route( $this->namespace, "/$name/", array(
 			'methods' => 'POST',
 			'callback' => array($this, "command_$name"),
 			'args' => array_merge($baseargs, $addargs)
