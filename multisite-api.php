@@ -348,31 +348,37 @@ class Multisite_API_Controller {
 	public function command_list( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
-		$format = $params['format'];
 		$fields = $params['fields'];
 		$filter = $params['filter'];
 
 		$sites = get_sites();
 
+		if ( $filter ) {
+			$filter = explode( '=', $filter );
+			$sites = array_filter( $sites, function( $s ) {
+				return $sites->{$filter[0]} == $filter[1];
+			});
+		}
+
 		if ( $fields ) {
 			$fields = explode( ',', $fields );
-			$sites = array_map( function( $s ) use ( $fields ) {
-				$new = new stdClass();
-				foreach ( $fields as $field ) {
-					$new->{$field} = $s->{$field};
-				}
-				return $new;
-			}, $sites );
+
+			if ( count( $fields ) == 1 ) {
+				$sites = array_map( function( $s ) use ( $fields ) {
+					return $s->{$fields[0]};
+				}, $sites );
+			} else {
+				$sites = array_map( function( $s ) use ( $fields ) {
+					$new = new stdClass();
+					foreach ( $fields as $field ) {
+						$new->{$field} = $s->{$field};
+					}
+					return $new;
+				}, $sites );
+			}
 		}
 
-		if ( $format === 'json' ) {
-			$result = json_encode( $sites );
-		} else if ( $format === 'csv' ) {
-
-		} else if ( $format === 'count' ) {
-			$result = count( $sites );
-		}
-		echo $result;
+		echo json_encode( $sites );
 		exit;
 	}
 
