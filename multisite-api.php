@@ -109,7 +109,12 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'deleted', 0 );
+		$result = update_blog_status( $site->blog_id, 'deleted', 0 );
+		if ( $result === 0 ) {
+			echo "Site activated.";
+		} else {
+			echo "Site could not be activated.";
+		}
 		exit;
 	}
 
