@@ -21,6 +21,20 @@ class Multisite_API_Controller {
 		$this->register_routes();
 	}
 
+	private function extract_site( $params ) {
+		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
+			$site = get_blog_details( $params['id'] );
+		} elseif ( array_key_exists( 'path', $params ) && is_string( $params['path'] ) ) {
+			$site = get_blog_details( $params['path'] );
+		}
+
+		if (!$site) {
+			return false;
+		} else {
+			return $site;
+		}
+	}
+
 	private function register_post_route($name, $baseargs, $addargs=array()) {
 		register_rest_route( $this->namespace, "/$path/", array(
 			'methods' => 'POST',
@@ -88,30 +102,8 @@ class Multisite_API_Controller {
 		$this->register_post_route( 'unspam', $site_exists_args );
 	}
 
-	private function extract_site( $params ) {
-		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
-			$site = get_blog_details( $params['id'] );
-		} elseif ( array_key_exists( 'path', $params ) && is_string( $params['path'] ) ) {
-			$site = get_blog_details( $params['path'] );
-		}
-
-		if (!$site) {
-			return false;
-		} else {
-			return $site;
-		}
-	}
-
 	public function command_list( WP_REST_Request $request ) {
-		// Get plugin options.
-		// $options = get_option( 'multisite_api_settings' );
-
-		// Do nothing if we're missing the catalog URL.
-		// if ( ! $options['multisite_api_url'] ) {
-		// 	return false;
-		// }
-
-		echo json_encode(get_sites());
+		echo json_encode( get_sites() );
 		exit;
 	}
 
@@ -125,7 +117,7 @@ class Multisite_API_Controller {
 		$admin  = $params['admin'];
 
 		if (!is_numeric($admin)) {
-			$admin = get_user_by('login', $params['admin'])->id;
+			$admin = get_user_by( 'login', $params['admin'] )->id;
 		}
 
 		echo "Attempting to create blog with:\n";
@@ -147,11 +139,8 @@ class Multisite_API_Controller {
 
 	public function command_delete( WP_REST_Request $request ) {
 		$params = $request->get_params();
-		$id     = $params['id'];
-		$path   = $params['path'];
+		$site   = $this->extract_site( $params );
 		$drop   = $params['drop'];
-
-		$site = $this->extract_site( $params );
 
 		wpmu_delete_blog( $site->blog_id, $drop );
 		exit;
@@ -160,10 +149,7 @@ class Multisite_API_Controller {
 	public function command_archive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
-		$id     = $params['id'];
-		$path   = $params['path'];
-
-		$site = $this->extract_site( $params );
+		$site   = $this->extract_site( $params );
 
 		update_blog_status( $site->blog_id, 'archived', 1 );
 		exit;
@@ -172,12 +158,10 @@ class Multisite_API_Controller {
 	public function command_unarchive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
-		$id     = $params['id'];
-		$path   = $params['path'];
-
-		$site = $this->extract_site( $params );
+		$site   = $this->extract_site( $params );
 
 		update_blog_status( $site->blog_id, 'archived', 0 );
+		exit;
 	}
 
 }
