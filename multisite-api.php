@@ -137,7 +137,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = get_current_site();
 		$domain = $site->domain;
-		$path   = '/' . ltrim( $params['path'], '/\\' );
+		$path   = '/' . ltrim( $params['slug'], '/\\' );
 		$title  = $params['title'];
 		$admin  = $params['admin'];
 
