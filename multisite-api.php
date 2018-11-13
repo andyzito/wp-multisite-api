@@ -26,10 +26,13 @@ class Multisite_API_Controller {
 			$site = get_blog_details( $params['id'] );
 		} elseif ( array_key_exists( 'slug', $params ) && is_string( $params['slug'] ) ) {
 			$site = get_blog_details( $params['slug'] );
+		} else {
+			echo "Please specify a site, either by id or slug.";
+			exit;
 		}
 
-		if (!$site) {
-			echo "Please specify a site, either by id or slug.";
+		if ( ! $site ) {
+			echo "The site you specified was not found.";
 			exit;
 		}
 
@@ -163,7 +166,13 @@ class Multisite_API_Controller {
 		$site   = $this->extract_site( $params );
 		$drop   = ! $params['keep-tables'];
 
+		if ( is_main_blog_site( $site->blog_id ) ) {
+			echo "You cannot delete the root site.";
+			exit;
+		}
+
 		wpmu_delete_blog( $site->blog_id, $drop );
+		echo "The site {$site->siteurl} was deleted.";
 		exit;
 	}
 
