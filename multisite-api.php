@@ -355,6 +355,7 @@ class Multisite_API_Controller {
 		$sites = get_sites();
 
 		if ( $fields ) {
+			$fields = explode( ',', $fields );
 			$sites = array_map( function( $s ) use ( $fields ) {
 				$new = new stdClass();
 				foreach ( $fields as $field ) {
@@ -371,7 +372,7 @@ class Multisite_API_Controller {
 		} else if ( $format === 'count' ) {
 			$result = count( $sites );
 		}
-		return $result;
+		echo $result;
 		exit;
 	}
 
