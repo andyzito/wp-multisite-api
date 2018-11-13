@@ -24,8 +24,8 @@ class Multisite_API_Controller {
 	private function extract_site( $params ) {
 		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
 			$site = get_blog_details( $params['id'] );
-		} elseif ( array_key_exists( 'path', $params ) && is_string( $params['path'] ) ) {
-			$site = get_blog_details( $params['path'] );
+		} elseif ( array_key_exists( 'slug', $params ) && is_string( $params['slug'] ) ) {
+			$site = get_blog_details( $params['slug'] );
 		}
 
 		if (!$site) {
@@ -46,7 +46,7 @@ class Multisite_API_Controller {
 	public function register_routes() {
 
 		$base_args = array(
-			'path' => array(
+			'slug' => array(
 				'default' => false,
 			),
 		);
@@ -72,8 +72,8 @@ class Multisite_API_Controller {
 
 		$this->register_post_route( 'delete', $site_exists_args,
 			array(
-				'drop' => array(
-					'default' => true,
+				'keep-tables' => array(
+					'default' => false,
 				)
 			) );
 
@@ -93,8 +93,6 @@ class Multisite_API_Controller {
 
 		$this->register_post_route( 'spam', $site_exists_args );
 
-		$this->register_post_route( 'switch-language', $site_exists_args );
-
 		$this->register_post_route( 'unarchive', $site_exists_args );
 
 		$this->register_post_route( 'unmature', $site_exists_args );
@@ -102,8 +100,21 @@ class Multisite_API_Controller {
 		$this->register_post_route( 'unspam', $site_exists_args );
 	}
 
-	public function command_list( WP_REST_Request $request ) {
-		echo json_encode( get_sites() );
+	public function command_activate( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'deleted', 0 );
+		exit;
+	}
+
+	public function command_archive( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'archived', 1 );
 		exit;
 	}
 
@@ -137,6 +148,15 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	public function command_deactivate( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'deleted', 1 );
+		exit;
+	}
+
 	public function command_delete( WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
@@ -146,12 +166,44 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function command_archive( WP_REST_Request $request ) {
+	public function command_list( WP_REST_Request $request ) {
+		echo json_encode( get_sites() );
+		exit;
+	}
+
+	public function command_mature( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		update_blog_status( $site->blog_id, 'archived', 1 );
+		update_blog_status( $site->blog_id, 'mature', 1 );
+		exit;
+	}
+
+	public function command_private( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'public', 0 );
+		exit;
+	}
+
+	public function command_public( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'public', 1 );
+		exit;
+	}
+
+	public function command_spam( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'spam', 1 );
 		exit;
 	}
 
@@ -161,6 +213,24 @@ class Multisite_API_Controller {
 		$site   = $this->extract_site( $params );
 
 		update_blog_status( $site->blog_id, 'archived', 0 );
+		exit;
+	}
+
+	public function command_unmature( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'mature', 0 );
+		exit;
+	}
+
+	public function command_unspam( WP_REST_Request $request ) {
+
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		update_blog_status( $site->blog_id, 'unspam', 1 );
 		exit;
 	}
 
