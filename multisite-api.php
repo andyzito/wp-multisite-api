@@ -14,8 +14,19 @@ require_once(ABSPATH . 'wp-admin/includes/ms.php');
 
 class Multisite_API_Controller {
 	public function __construct() {
+		if ( !is_multisite() ) {
+			exit('This is not a multisite');
+		}
 		$this->namespace = '/multisite/v2';
 		$this->register_routes();
+	}
+
+	private function register_post_route($name, $baseargs, $addargs=array()) {
+		register_rest_route( $this->namespace, "/$path/", array(
+			'methods' => 'POST',
+			'callback' => array($this, "command_$name"),
+			'args' => array_merge($baseargs, $addargs)
+		) );
 	}
 
 	public function register_routes() {
@@ -32,42 +43,49 @@ class Multisite_API_Controller {
 			)
 		), $base_args );
 
-		register_rest_route( $this->namespace, '/archive/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'archive_site'),
-			'args' => $site_exists_args
-		) );
+		$this->register_post_route( 'activate', $site_exists_args );
 
-		register_rest_route( $this->namespace, '/create/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'create_site'),
-			'args' => array_merge( array(
+		$this->register_post_route( 'archive', $site_exists_args );
+
+		$this->register_post_route( 'create', $site_exists_args,
+			array(
 				'admin' => array(
 					'default' => 1,
 				)
-			), $site_exists_args )
-		) );
+			) );
 
-		register_rest_route( $this->namespace, '/delete/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'delete_site'),
-			'args' => array_merge( array(
+		$this->register_post_route( 'deactivate', $site_exists_args );
+
+		$this->register_post_route( 'delete', $site_exists_args,
+			array(
 				'drop' => array(
 					'default' => true,
 				)
-			), $site_exists_args )
-		) );
+			) );
 
-		register_rest_route( $this->namespace, '/list/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'list_sites'),
-		) );
+		$this->register_post_route( 'empty', $site_exists_args );
 
-		register_rest_route( $this->namespace, '/unarchive/', array(
-			'methods' => 'POST',
-			'callback' => array($this, 'unarchive_site'),
-			'args' => $site_exists_args
-		) );
+		$this->register_post_route( 'list', array( ) );
+
+		$this->register_post_route( 'mature', $site_exists_args );
+
+		$this->register_post_route( 'meta', $site_exists_args );
+
+		$this->register_post_route( 'option', $site_exists_args );
+
+		$this->register_post_route( 'private', $site_exists_args );
+
+		$this->register_post_route( 'public', $site_exists_args );
+
+		$this->register_post_route( 'spam', $site_exists_args );
+
+		$this->register_post_route( 'switch-language', $site_exists_args );
+
+		$this->register_post_route( 'unarchive', $site_exists_args );
+
+		$this->register_post_route( 'unmature', $site_exists_args );
+
+		$this->register_post_route( 'unspam', $site_exists_args );
 	}
 
 	private function extract_site( $params ) {
@@ -84,7 +102,7 @@ class Multisite_API_Controller {
 		}
 	}
 
-	public function list_sites( WP_REST_Request $request ) {
+	public function command_list( WP_REST_Request $request ) {
 		// Get plugin options.
 		// $options = get_option( 'multisite_api_settings' );
 
@@ -97,7 +115,7 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function create_site( WP_REST_Request $request ) {
+	public function command_create( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
 		$site   = get_current_site();
@@ -127,7 +145,7 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function delete_site( WP_REST_Request $request ) {
+	public function command_delete( WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$id     = $params['id'];
 		$path   = $params['path'];
@@ -139,7 +157,7 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function archive_site( WP_REST_Request $request ) {
+	public function command_archive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
 		$id     = $params['id'];
@@ -151,7 +169,7 @@ class Multisite_API_Controller {
 		exit;
 	}
 
-	public function unarchive_site( WP_REST_Request $request ) {
+	public function command_unarchive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
 		$id     = $params['id'];
