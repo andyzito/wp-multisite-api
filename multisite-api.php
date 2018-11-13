@@ -29,10 +29,11 @@ class Multisite_API_Controller {
 		}
 
 		if (!$site) {
-			return false;
-		} else {
-			return $site;
+			echo "Please specify a site, either by id or slug.";
+			exit;
 		}
+
+		return $site;
 	}
 
 	private function register_post_route($name, $baseargs, $addargs=array()) {
