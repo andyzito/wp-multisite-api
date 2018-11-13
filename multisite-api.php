@@ -181,7 +181,7 @@ class Multisite_API_Controller {
 		$site   = $this->extract_site( $params );
 		$drop   = ! $params['keep-tables'];
 
-		if ( is_main_blog_site( $site->blog_id ) ) {
+		if ( is_main_site( $site->blog_id ) ) {
 			echo "You cannot delete the root site.";
 			exit;
 		}
