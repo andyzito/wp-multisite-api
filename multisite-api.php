@@ -151,7 +151,7 @@ class Multisite_API_Controller {
 		echo "  Title: $title\n";
 		echo "  Admin ID: $admin\n";
 
-		$result = wpmu_create_blog( $domain, $path, $title, $user_id );
+		$result = wpmu_create_blog( $domain, $path, $title, $admin );
 
 		if ( is_numeric( $result ) ) {
 			echo "Site created! ID: $result";
