@@ -93,7 +93,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Register all REST routes needed by Multisite API.
+	 * Registers all REST routes needed by Multisite API.
 	 *
 	 * @return void
 	 */
@@ -155,7 +155,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Activate a site.
+	 * Activates a site.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to activate
@@ -180,7 +180,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Archive a site.
+	 * Archives a site.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to archive
@@ -205,7 +205,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Create a new site within a multisite network.
+	 * Creates a new site within a multisite network.
 	 *
 	 * Accepts the following parameters:
 	 *   slug:               Slug of the new site (used as path)
@@ -247,7 +247,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Deactivate a site.
+	 * Deactivates a site.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to deactivate
@@ -272,7 +272,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Delete a site.
+	 * Deletes a site.
 	 *
 	 * Accepts the following parameters:
 	 *   id:                  ID of the site to delete
@@ -299,7 +299,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * List all sites in a multisite.
+	 * Lists all sites in a multisite.
 	 *
 	 * @param WP_REST_Request A WP REST Request
 	 *
@@ -311,7 +311,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Mark a site as mature.
+	 * Marks a site as mature.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be marked as mature
@@ -336,7 +336,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Make a site private.
+	 * Makes a site private.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be made private
@@ -361,7 +361,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Make a site public.
+	 * Makes a site public.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be made public
@@ -386,7 +386,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Mark a site as spam.
+	 * Marks a site as spam.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be marked as spam
@@ -411,7 +411,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Unarchive a site.
+	 * Unarchives a site.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be unarchive
@@ -436,7 +436,7 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Mark a site as immature.
+	 * Marks a site as immature.
 	 *
 	 * Accepts the following parameters:
 	 *   id:   ID of the site to be marked as immature
