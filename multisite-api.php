@@ -178,7 +178,17 @@ class Multisite_API_Controller {
 
 		$this->register_post_route( 'empty', $site_exists_args );
 
-		$this->register_post_route( 'list', array( ) );
+		$this->register_post_route( 'list', array(
+			'fields' => array(
+				'default' => false,
+			),
+			'format' => array(
+				'default' => 'json',
+			),
+			'filter' => array(
+				'default' => false,
+			)
+		) );
 
 		$this->register_post_route( 'mature', $site_exists_args );
 
@@ -336,7 +346,32 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_list( WP_REST_Request $request ) {
-		echo json_encode( get_sites() );
+
+		$params = $request->get_params();
+		$format = $params['format'];
+		$fields = $params['fields'];
+		$filter = $params['filter'];
+
+		$sites = get_sites();
+
+		if ( $fields ) {
+			$sites = array_map( function( $s ) use ( $fields ) {
+				$new = new stdClass();
+				foreach ( $fields as $field ) {
+					$new->{$field} = $s->{$field};
+				}
+				return $new;
+			}, $sites );
+		}
+
+		if ( $format === 'json' ) {
+			$result = json_encode( $sites );
+		} else if ( $format === 'csv' ) {
+
+		} else if ( $format === 'count' ) {
+			$result = count( $sites );
+		}
+		return $result;
 		exit;
 	}
 
