@@ -39,11 +39,11 @@ class Multisite_API_Controller {
 		return $site;
 	}
 
-	private function register_post_route($name, $baseargs, $addargs=array()) {
+	private function register_post_route($name, $baseargs, $addargs = array()) {
 		register_rest_route( $this->namespace, "/$name/", array(
 			'methods' => 'POST',
-			'callback' => array($this, "command_$name"),
-			'args' => array_merge($baseargs, $addargs)
+			'callback' => array( $this, "command_$name" ),
+			'args' => array_merge( $baseargs, $addargs )
 		) );
 	}
 
@@ -153,7 +153,7 @@ class Multisite_API_Controller {
 
 		$result = wpmu_create_blog( $domain, $path, $title, $user_id );
 
-		if (is_numeric($result)) {
+		if ( is_numeric( $result ) ) {
 			echo "Site created! ID: $result";
 		} else {
 			echo "Sorry, site could not be created because...\n";
