@@ -215,7 +215,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'deleted', 0 );
+		$this->update_site_status( $site, 'deleted', 0 );
 		exit;
 	}
 
@@ -235,7 +235,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'archived', 1 );
+		$this->update_site_status( $site, 'archived', 1 );
 		exit;
 	}
 
@@ -297,7 +297,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'deleted', 1 );
+		$this->update_site_status( $site, 'deleted', 1 );
 		exit;
 	}
 
@@ -356,7 +356,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'mature', 1 );
+		$this->update_site_status( $site, 'mature', 1 );
 		exit;
 	}
 
@@ -376,7 +376,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'public', 0 );
+		$this->update_site_status( $site, 'public', 0 );
 		exit;
 	}
 
@@ -396,7 +396,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'public', 1 );
+		$this->update_site_status( $site, 'public', 1 );
 		exit;
 	}
 
@@ -416,7 +416,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'spam', 1 );
+		$this->update_site_status( $site, 'spam', 1 );
 		exit;
 	}
 
@@ -436,7 +436,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'archived', 0 );
+		$this->update_site_status( $site, 'archived', 0 );
 	}
 
 	/**
@@ -455,7 +455,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'mature', 0 );
+		$this->update_site_status( $site, 'mature', 0 );
 		exit;
 	}
 
@@ -475,7 +475,7 @@ class Multisite_API_Controller {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
-		$this->update_blog_status( $site, 'spam', 0 );
+		$this->update_site_status( $site, 'spam', 0 );
 		exit;
 	}
 
