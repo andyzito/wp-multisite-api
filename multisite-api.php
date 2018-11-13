@@ -8,19 +8,50 @@
  * Version:         0.0.0
  *
  * @package         multisite-api
+ * @author    Andrew Zito
+ * @copyright Lafayette College 2018 onwards
  */
 
 require_once(ABSPATH . 'wp-admin/includes/ms.php');
 
+/**
+ * Multisite_API_Controller handles REST routes and callbacks for the Multisite API plugin.
+ *
+ * @package   mutlisite-api
+ * @author    Andrew Zito
+ * @copyright Lafayette College 2018 onwards
+ * @since     1.0.0
+ */
 class Multisite_API_Controller {
+
+	/**
+	 * The constructor function.
+	 *
+	 * In its constructor, Multisite_API_Controller checks that the current site
+	 * is a multisite/network, and registers all the REST routes needed by the API.
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		if ( !is_multisite() ) {
 			exit('This is not a multisite');
 		}
+
 		$this->namespace = '/multisite/v2';
 		$this->register_routes();
 	}
 
+	/**
+	 * Extracts a site object from REST request params.
+	 *
+	 * This function takes a params array from a REST request, and looks for the
+	 * parameters 'id' and 'slug'. It uses whichever one it finds to look up the
+	 * site, and return a data object.
+	 *
+	 * @param array $params The parameter array from WP_REST_Request->get_params
+	 *
+	 * @return object $site A WP data object with details about the site found
+	 */
 	private function extract_site( $params ) {
 		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
 			$site = get_blog_details( $params['id'] );
@@ -39,7 +70,21 @@ class Multisite_API_Controller {
 		return $site;
 	}
 
-	private function register_post_route($name, $baseargs, $addargs = array()) {
+	/**
+	 * Registers a REST route with the POST method.
+	 *
+	 * This is a convenience function to handle bits of the rest route registration
+	 * that are frequently repeated.
+	 *
+	 * @param string $name Name of the route, used for the path and the callback
+	 * @param array $baseargs The set of arguments to register for the route
+	 * @param array $addargs An additional set of arguments - this allows a call
+	 * to this function to set base arguments from an external variable, and then
+	 * add one or two of its own.
+	 *
+	 * @return void
+	 */
+	private function register_post_route( $name, $baseargs, $addargs = array()) {
 		register_rest_route( $this->namespace, "/$name/", array(
 			'methods' => 'POST',
 			'callback' => array( $this, "command_$name" ),
@@ -47,6 +92,11 @@ class Multisite_API_Controller {
 		) );
 	}
 
+	/**
+	 * Register all REST routes needed by Multisite API.
+	 *
+	 * @return void
+	 */
 	public function register_routes() {
 
 		$base_args = array(
@@ -104,6 +154,17 @@ class Multisite_API_Controller {
 		$this->register_post_route( 'unspam', $site_exists_args );
 	}
 
+	/**
+	 * Activate a site.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to activate
+	 *   slug: Slug of the site to activate
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_activate( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -118,6 +179,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Archive a site.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to archive
+	 *   slug: Slug of the site to archive
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_archive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -132,6 +204,18 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Create a new site within a multisite network.
+	 *
+	 * Accepts the following parameters:
+	 *   slug:               Slug of the new site (used as path)
+	 *   title:              Title of the new site
+	 *   admin [admin user]: ID or username of user who will own the new site. Defaults to user with ID 1
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_create( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -162,6 +246,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Deactivate a site.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to deactivate
+	 *   slug: Slug of the site to deactivate
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_deactivate( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -176,6 +271,18 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Delete a site.
+	 *
+	 * Accepts the following parameters:
+	 *   id:                  ID of the site to delete
+	 *   slug:                Slug of the site to delete
+	 *   keep-tables [false]: Delete site but preserve database tables
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_delete( WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
@@ -191,11 +298,29 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * List all sites in a multisite.
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_list( WP_REST_Request $request ) {
 		echo json_encode( get_sites() );
 		exit;
 	}
 
+	/**
+	 * Mark a site as mature.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be marked as mature
+	 *   slug: Slug of the site to be marked as mature
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_mature( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -210,6 +335,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Make a site private.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be made private
+	 *   slug: Slug of the site to be made private
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_private( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -224,6 +360,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Make a site public.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be made public
+	 *   slug: Slug of the site to be made public
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_public( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -238,6 +385,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Mark a site as spam.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be marked as spam
+	 *   slug: Slug of the site to be marked as spam
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_spam( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -252,6 +410,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Unarchive a site.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be unarchive
+	 *   slug: Slug of the site to be unarchived
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_unarchive( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -266,6 +435,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Mark a site as immature.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be marked as immature
+	 *   slug: Slug of the site to be marked as immature
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_unmature( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
@@ -280,6 +460,17 @@ class Multisite_API_Controller {
 		exit;
 	}
 
+	/**
+	 * Unmark a site as spam.
+	 *
+	 * Accepts the following parameters:
+	 *   id:   ID of the site to be unmarked as spam
+	 *   slug: Slug of the site to be unmarked as spam
+	 *
+	 * @param WP_REST_Request A WP REST Request
+	 *
+	 * @return void
+	 */
 	public function command_unspam( WP_REST_Request $request ) {
 
 		$params = $request->get_params();
