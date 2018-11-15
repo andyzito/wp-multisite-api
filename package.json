@@ -1,8 +1,8 @@
 {
-  "name": "iiisms",
+  "name": "multisite-api",
   "version": "0.2.0",
   "main": "Gruntfile.js",
-  "author": "YOUR NAME HERE",
+  "author": "Andrew Zito",
   "license": "GPL-3.0",
   "devDependencies": {
     "grunt": "~0.4.5",

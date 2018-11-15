@@ -1,12 +1,12 @@
 {
-  "name": "lafayette/iiisms",
-  "description": "Library Catalog SMS",
+  "name": "lafayette/multisite-api",
+  "description": "Multisite API",
   "type": "wordpress-plugin",
   "license": "GPL-2.0",
   "authors": [
     {
-      "name": "Charles Fulton",
-      "email": "fultonc@lafayette.edu"
+      "name": "Andrew Zito",
+      "email": "zitoa@lafayette.edu"
     }
   ],
   "minimum-stability": "stable",

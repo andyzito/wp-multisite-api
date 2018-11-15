@@ -9,7 +9,7 @@ module.exports = function( grunt ) {
 
 		addtextdomain: {
 			options: {
-				textdomain: 'iiisms',
+				textdomain: 'multisite-api',
 			},
 			target: {
 				files: {
@@ -20,12 +20,12 @@ module.exports = function( grunt ) {
 
 		bump: {
                         options: {
-                                files: ['package.json', 'iiisms.php', 'readme.txt'],
-                                commitMessage: 'Library Catalog SMS %VERSION%',
-                                commitFiles: ['package.json', 'iiisms.php', 'readme.txt', 'README.md', 'languages/iiisms.pot'],
+                                files: ['package.json', 'multisite-api.php', 'readme.txt'],
+                                commitMessage: 'Multisite API %VERSION%',
+                                commitFiles: ['package.json', 'multisite-api.php', 'readme.txt', 'README.md', 'languages/multisite-api.pot'],
                                 push: false,
                                 tagName: '%VERSION%',
-                                tagMessage: 'Library Catalog SMS %VERSION%',
+                                tagMessage: 'Multisite API %VERSION%',
                                 regExp: new RegExp('([\'|\"]?(?:version|stable tag)[\'|\"]?[ ]*:[ ]*[\'|\"]?)(\\d+\\.\\d+\\.\\d+(-rc\\.\\d+)?(-\\d+)?)[\\d||A-a|.|-]*([\'|\"]?)', 'i'),
                         }
                 },
@@ -42,8 +42,8 @@ module.exports = function( grunt ) {
 			target: {
 				options: {
 					domainPath: '/languages',
-					mainFile: 'iiisms.php',
-					potFilename: 'iiisms.pot',
+					mainFile: 'multisite-api.php',
+					potFilename: 'multisite-api.pot',
 					potHeaders: {
 						poedit: true,
 						'x-poedit-keywordslist': true

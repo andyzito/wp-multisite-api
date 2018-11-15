@@ -1,8 +1,9 @@
 <?php
 /**
- * Plugin Name:     Multisite REST API Extensions
+ * Plugin Name:     Multisite REST API
  * Description:     Provides API endpoints for managing multisite networks.
- * Author:          Lafayette College ITS
+ * Author:          Andrew Zito
+ * Copyright:       Lafayette College ITS 2018 onwards
  * Text Domain:     multisite-api
  * Domain Path:     /languages
  * Version:         1.0.0
@@ -33,8 +34,8 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function __construct() {
-		if ( !is_multisite() ) {
-			exit('This is not a multisite');
+		if ( ! is_multisite() ) {
+			exit( 'This is not a multisite' );
 		}
 
 		$this->namespace = '/multisite/v2';
@@ -53,15 +54,19 @@ class Multisite_API_Controller {
 	 * @return object $site A WP data object with details about the site found
 	 */
 	private function extract_site( $params ) {
+		// If ID is passed, use that.
 		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
 			$site = get_blog_details( $params['id'] );
+		// If slug is passed, used that.
 		} elseif ( array_key_exists( 'slug', $params ) && is_string( $params['slug'] ) ) {
 			$site = get_blog_details( $params['slug'] );
+		// If neither is passed, die.
 		} else {
 			echo "Please specify a site, either by id or slug.";
 			exit;
 		}
 
+		// If site not found, die.
 		if ( ! $site ) {
 			echo "The site you specified was not found.";
 			exit;
@@ -70,7 +75,18 @@ class Multisite_API_Controller {
 		return $site;
 	}
 
+	/**
+	 * Handles updating site status and returning success/failure message.
+	 *
+	 * @param array $site WP site data object (from get_blog_details)
+	 * @param string $pref Meta key that needs to be updated
+	 * @param int $value Value we're updating the blog meta key to
+	 *
+	 * @return void
+	 */
 	private function update_site_status ( $site, $pref, $value ) {
+		// Translate key to be updated to human readable action string.
+		// All credit to wp-cli.
 		if ( $pref == 'archived' && $value == 1 ) {
 			$action = 'archived';
 		} else if ( $pref == 'archived' && $value == 0) {
@@ -93,11 +109,13 @@ class Multisite_API_Controller {
 			$action = 'marked as unmature';
 		}
 
+		// Do not allow updating of main site.
 		if ( is_main_site( $site->blog_id ) ) {
 			echo "You are not allowed to change the main site.";
 			exit;
 		}
 
+		// Check if site is already set to target.
 		$old = get_blog_status( $site->blog_id, $pref );
 
 		if ( $old == $value ) {
@@ -105,8 +123,10 @@ class Multisite_API_Controller {
 			exit;
 		}
 
+		// Update status.
 		$result = update_blog_status( $site->blog_id, $pref, $value );
 
+		// Did it work?
 		if ( $result === $value ) {
 			echo "Site {$site->siteurl} $action.";
 		} else {
@@ -143,7 +163,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function register_routes() {
-
 		$base_args = array(
 			'slug' => array(
 				'default' => false,
@@ -218,7 +237,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_activate( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -238,7 +256,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_archive( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -259,7 +276,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_create( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = get_current_site();
 		$domain = $site->domain;
@@ -267,7 +283,7 @@ class Multisite_API_Controller {
 		$title  = $params['title'];
 		$admin  = $params['admin'];
 
-		if (!is_numeric($admin)) {
+		if ( ! is_numeric( $admin ) ) {
 			$admin = get_user_by( 'login', $params['admin'] )->id;
 		}
 
@@ -283,7 +299,7 @@ class Multisite_API_Controller {
 			echo "Site created! ID: $result";
 		} else {
 			echo "Sorry, site could not be created because...\n";
-			echo json_encode($result);
+			echo json_encode( $result );
 		}
 		exit;
 	}
@@ -300,7 +316,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_deactivate( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -339,7 +354,7 @@ class Multisite_API_Controller {
 	 * Lists all sites in a multisite.
 	 *
 	 * Accepts the following parameters:
-	 *   fields: Fields to return - specifying a single field will retreive a flat array
+	 *   fields: Fields to return - specifying a single field will retrieve a flat array
 	 *   filter: A single filter with format [key]=[val]
 	 *
 	 * For both 'fields' and 'filter', only the default WP site data fields are available.
@@ -349,7 +364,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_list( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$fields = $params['fields'];
 		$filter = $params['filter'];
@@ -397,7 +411,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_mature( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -417,7 +430,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_private( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -437,7 +449,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_public( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -457,7 +468,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_spam( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -477,7 +487,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_unarchive( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -496,7 +505,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_unmature( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -516,7 +524,6 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	public function command_unspam( WP_REST_Request $request ) {
-
 		$params = $request->get_params();
 		$site   = $this->extract_site( $params );
 
@@ -525,11 +532,7 @@ class Multisite_API_Controller {
 	}
 
 }
+
 add_action( 'rest_api_init', function() {
 	new Multisite_API_Controller();
 } );
-
-// if ( is_admin() ) {
-// 	add_action( 'admin_menu', 'multisite_api_add_admin_menu' );
-// 	add_action( 'admin_init', 'multisite_api_settings_init' );
-// }
