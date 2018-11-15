@@ -1,4 +1,4 @@
-# Iiisms #
+# Multisite API #
 **Contributors:** Andrew Zito, Lafayette College ITS  
 **Requires at least:** 4.7  
 **License:** GPLv2 or later  
