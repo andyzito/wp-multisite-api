@@ -53,7 +53,7 @@ class Multisite_API_Controller {
 	 *
 	 * @return object $site A WP data object with details about the site found.
 	 */
-	private function extract_site( $params ) {
+	private function extract_site( array $params ) {
 		if ( array_key_exists( 'id', $params ) && is_numeric( $params['id'] ) ) {
 			// If ID is passed, use that.
 			$site = get_blog_details( $params['id'] );
@@ -84,7 +84,7 @@ class Multisite_API_Controller {
 	 *
 	 * @return void
 	 */
-	private function update_site_status( $site, $pref, $value ) {
+	private function update_site_status( array $site, string $pref, int $value ) {
 		// Translate key to be updated to human readable action string.
 		// All credit to wp-cli.
 		if ( 'archived' === $pref && 1 === $value ) {
@@ -149,7 +149,7 @@ class Multisite_API_Controller {
 	 *
 	 * @return void
 	 */
-	private function register_post_route( $name, $baseargs, $addargs = array() ) {
+	private function register_post_route( string $name, array $baseargs, array $addargs = array() ) {
 		register_rest_route(
 			$this->namespace,
 			"/$name/",
@@ -390,7 +390,7 @@ class Multisite_API_Controller {
 			$filter = explode( '=', $filter );
 			$sites  = array_filter(
 				$sites,
-				function( $s ) use ( $filter ) {
+				function( object $s ) use ( $filter ) {
 					return $s->{$filter[0]} === $filter[1];
 				}
 			);
@@ -401,14 +401,14 @@ class Multisite_API_Controller {
 
 			if ( count( $fields ) === 1 ) {
 				$sites = array_map(
-					function( $s ) use ( $fields ) {
+					function( object $s ) use ( $fields ) {
 						return $s->{$fields[0]};
 					},
 					$sites
 				);
 			} else {
 				$sites = array_map(
-					function( $s ) use ( $fields ) {
+					function( object $s ) use ( $fields ) {
 						$new = new stdClass();
 						foreach ( $fields as $field ) {
 							$new->{$field} = $s->{$field};
