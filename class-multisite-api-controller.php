@@ -12,7 +12,7 @@ require_once ABSPATH . 'wp-admin/includes/ms.php';
  */
 class Multisite_API_Controller {
 
-	public $namespace = '/multisite/v2';
+	public $namespace = 'multisite/v2';
 
 	/**
 	 * The constructor function.
