@@ -1,29 +1,18 @@
 <?php
-/**
- * Plugin Name:     Multisite REST API
- * Description:     Provides API endpoints for managing multisite networks.
- * Author:          Andrew Zito
- * Copyright:       Lafayette College ITS 2018 onwards
- * Text Domain:     multisite-api
- * Domain Path:     /languages
- * Version:         1.0.0
- *
- * @package         multisite-api
- * @author          Andrew Zito
- * @copyright       Lafayette College 2018 onwards
- */
 
 require_once ABSPATH . 'wp-admin/includes/ms.php';
 
 /**
  * Multisite_API_Controller handles REST routes and callbacks for the Multisite API plugin.
  *
- * @package   mutlisite-api
+ * @package   multisite-api
  * @author    Andrew Zito
  * @copyright Lafayette College 2018 onwards
  * @since     1.0.0
  */
 class Multisite_API_Controller {
+
+	public $namespace = '/multisite/v2';
 
 	/**
 	 * The constructor function.
@@ -38,7 +27,6 @@ class Multisite_API_Controller {
 			exit( 'This is not a multisite' );
 		}
 
-		$this->namespace = '/multisite/v2';
 		$this->register_routes();
 	}
 

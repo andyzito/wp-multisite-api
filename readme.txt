@@ -17,7 +17,7 @@ This plugin extends the REST API to allow management of sites in a multisite net
 
 == API ==
 
-This plugin supports all of the same commands as the WP-CLI site command, with the exception of switch-language.
+This plugin supports all of the same commands as the WP-CLI `site` command, with the exception of switch-language.
 
 = `activate` =
 
