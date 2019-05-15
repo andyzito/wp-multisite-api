@@ -72,7 +72,7 @@ class Multisite_API_Controller {
 	 *
 	 * @return void
 	 */
-	private function update_site_status( array $site, string $pref, int $value ) {
+	private function update_site_status( WP_Site $site, string $pref, int $value ) {
 		// Translate key to be updated to human readable action string.
 		// All credit to wp-cli.
 		if ( 'archived' === $pref && 1 === $value ) {
@@ -93,7 +93,7 @@ class Multisite_API_Controller {
 			$action = 'marked as private';
 		} elseif ( 'mature' === $pref && 1 === $value ) {
 			$action = 'marked as mature';
-		} elseif ( 'spam' === $pref && 0 === $value ) {
+		} elseif ( 'mature' === $pref && 0 === $value ) {
 			$action = 'marked as unmature';
 		}
 
@@ -106,7 +106,7 @@ class Multisite_API_Controller {
 		// Check if site is already set to target.
 		$old = get_blog_status( $site->blog_id, $pref );
 
-		if ( $old === $value ) {
+		if ( (int) $old === (int) $value ) {
 			echo "Site {$site->siteurl} is already $action.";
 			exit;
 		}
