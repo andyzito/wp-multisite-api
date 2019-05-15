@@ -66,9 +66,9 @@ class Multisite_API_Controller {
 	/**
 	 * Handles updating site status and returning success/failure message.
 	 *
-	 * @param array  $site WP site data object (from get_blog_details).
-	 * @param string $pref Meta key that needs to be updated.
-	 * @param int    $value Value we're updating the blog meta key to.
+	 * @param WP_Site $site WP site data object (from get_blog_details).
+	 * @param string  $pref Meta key that needs to be updated.
+	 * @param int     $value Value we're updating the blog meta key to.
 	 *
 	 * @return void
 	 */
@@ -124,27 +124,29 @@ class Multisite_API_Controller {
 	}
 
 	/**
-	 * Registers a REST route with the POST method.
+	 * Registers a REST route.
 	 *
-	 * This is a convenience function to handle bits of the rest route registration
+	 * This is a convenience function to handle bits of the REST route registration
 	 * that are frequently repeated.
 	 *
+	 * @param string $method POST or GET.
 	 * @param string $name Name of the route, used for the path and the callback.
 	 * @param array  $baseargs The set of arguments to register for the route.
-	 * @param array  $addargs An additional set of arguments - this allows a call
-	 * to this function to set base arguments from an external variable, and then
-	 * add one or two of its own.
+	 * @param string $capability The capability required to use this route.
 	 *
 	 * @return void
 	 */
-	private function register_post_route( string $name, array $baseargs, array $addargs = array() ) {
+	private function register_route( string $method, string $name, array $args, string $capability ) {
 		register_rest_route(
 			$this->namespace,
 			"/$name/",
 			array(
-				'methods'  => 'POST',
+				'methods'  => $method,
 				'callback' => array( $this, "command_$name" ),
-				'args'     => array_merge( $baseargs, $addargs ),
+				'args'     => array_merge( $args ),
+				'permission_callback' => function () use ($capability) {
+					return current_user_can( $capability );
+				}
 			)
 		);
 	}
@@ -154,51 +156,52 @@ class Multisite_API_Controller {
 	 *
 	 * @return void
 	 */
-	public function register_routes() {
-		$base_args = array(
+	private function register_routes() {
+		$site_args = array(
+			'id' => array(
+				'default' => false,
+			),
 			'slug' => array(
 				'default' => false,
 			),
 		);
 
-		$site_exists_args = array_merge(
-			array(
-				'id' => array(
-					'default' => false,
-				),
-			),
-			$base_args
-		);
+		$this->register_route( 'POST', 'activate', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'activate', $site_exists_args );
+		$this->register_route( 'POST', 'archive', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'archive', $site_exists_args );
-
-		$this->register_post_route(
+		$this->register_route(
+			'POST',
 			'create',
-			$site_exists_args,
-			array(
-				'admin' => array(
-					'default' => 1,
-				),
-			)
+			array_merge( $site_args,
+				array(
+					'admin' => array(
+						'default' => 1,
+					),
+				)
+			),
+			'create_sites'
 		);
 
-		$this->register_post_route( 'deactivate', $site_exists_args );
+		$this->register_route( 'POST', 'deactivate', $site_args, 'manage_sites' );
 
-		$this->register_post_route(
+		$this->register_route(
+			'POST',
 			'delete',
-			$site_exists_args,
-			array(
-				'keep-tables' => array(
-					'default' => false,
-				),
-			)
+			array_merge( $site_args,
+				array(
+					'keep-tables' => array(
+						'default' => false,
+					),
+				)
+			),
+			'delete_sites'
 		);
 
-		$this->register_post_route( 'empty', $site_exists_args );
+		// TODO $this->register_route(  'empty', $site_args );
 
-		$this->register_post_route(
+		$this->register_route(
+			'GET',
 			'list',
 			array(
 				'fields' => array(
@@ -207,32 +210,34 @@ class Multisite_API_Controller {
 				'filter' => array(
 					'default' => false,
 				),
-			)
+			),
+			'manage_sites'
 		);
 
-		$this->register_post_route( 'mature', $site_exists_args );
+		$this->register_route( 'POST', 'mature', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'meta', $site_exists_args );
+		// TODO $this->register_route( 'meta', $site_args );
 
-		$this->register_post_route( 'option', $site_exists_args );
+		// TODO $this->register_route( 'option', $site_args );
 
-		$this->register_post_route( 'private', $site_exists_args );
+		$this->register_route( 'POST', 'private', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'public', $site_exists_args );
+		$this->register_route( 'POST', 'public', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'spam', $site_exists_args );
+		$this->register_route( 'POST', 'spam', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'unarchive', $site_exists_args );
+		$this->register_route( 'POST', 'unarchive', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'unmature', $site_exists_args );
+		$this->register_route( 'POST', 'unmature', $site_args, 'manage_sites' );
 
-		$this->register_post_route( 'unspam', $site_exists_args );
+		$this->register_route( 'POST', 'unspam', $site_args, 'manage_sites' );
+
 	}
 
 	/**
 	 * Activates a site.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to activate
 	 *   slug: Slug of the site to activate
 	 *
@@ -251,7 +256,7 @@ class Multisite_API_Controller {
 	/**
 	 * Archives a site.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to archive
 	 *   slug: Slug of the site to archive
 	 *
@@ -311,7 +316,7 @@ class Multisite_API_Controller {
 	/**
 	 * Deactivates a site.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to deactivate
 	 *   slug: Slug of the site to deactivate
 	 *
@@ -415,7 +420,7 @@ class Multisite_API_Controller {
 	/**
 	 * Marks a site as mature.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be marked as mature
 	 *   slug: Slug of the site to be marked as mature
 	 *
@@ -434,7 +439,7 @@ class Multisite_API_Controller {
 	/**
 	 * Makes a site private.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be made private
 	 *   slug: Slug of the site to be made private
 	 *
@@ -453,7 +458,7 @@ class Multisite_API_Controller {
 	/**
 	 * Makes a site public.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be made public
 	 *   slug: Slug of the site to be made public
 	 *
@@ -472,7 +477,7 @@ class Multisite_API_Controller {
 	/**
 	 * Marks a site as spam.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be marked as spam
 	 *   slug: Slug of the site to be marked as spam
 	 *
@@ -491,7 +496,7 @@ class Multisite_API_Controller {
 	/**
 	 * Unarchives a site.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be unarchive
 	 *   slug: Slug of the site to be unarchived
 	 *
@@ -509,7 +514,7 @@ class Multisite_API_Controller {
 	/**
 	 * Marks a site as immature.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be marked as immature
 	 *   slug: Slug of the site to be marked as immature
 	 *
@@ -528,7 +533,7 @@ class Multisite_API_Controller {
 	/**
 	 * Unmarks a site as spam.
 	 *
-	 * Accepts the following parameters:
+	 * Accepts (at least one of) the following parameters:
 	 *   id:   ID of the site to be unmarked as spam
 	 *   slug: Slug of the site to be unmarked as spam
 	 *
