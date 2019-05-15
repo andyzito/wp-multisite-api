@@ -378,7 +378,7 @@ class Multisite_API_Controller {
 			$filter = explode( '=', $filter );
 			$sites  = array_filter(
 				$sites,
-				function( object $s ) use ( $filter ) {
+				function( $s ) use ( $filter ) {
 					return $s->{$filter[0]} === $filter[1];
 				}
 			);
@@ -389,7 +389,7 @@ class Multisite_API_Controller {
 
 			if ( count( $fields ) === 1 ) {
 				$sites = array_map(
-					function( object $s ) use ( $fields ) {
+					function( $s ) use ( $fields ) {
 						return $s->{$fields[0]};
 					},
 					$sites
