@@ -166,9 +166,9 @@ class Multisite_API_Controller {
 			),
 		);
 
-		$this->register_route( ['POST'], 'activate', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'activate', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'archive', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'archive', $site_args, 'manage_sites' );
 
 		$this->register_route(
 			['POST'],
@@ -183,10 +183,10 @@ class Multisite_API_Controller {
 			'create_sites'
 		);
 
-		$this->register_route( ['POST'], 'deactivate', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'deactivate', $site_args, 'manage_sites' );
 
 		$this->register_route(
-			['POST'],
+			['DELETE'],
 			'delete',
 			array_merge( $site_args,
 				array(
@@ -214,23 +214,23 @@ class Multisite_API_Controller {
 			'manage_sites'
 		);
 
-		$this->register_route( ['POST'], 'mature', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'mature', $site_args, 'manage_sites' );
 
 		// TODO $this->register_route( 'meta', $site_args );
 
 		// TODO $this->register_route( 'option', $site_args );
 
-		$this->register_route( ['POST'], 'private', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'private', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'public', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'public', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'spam', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'spam', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'unarchive', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'unarchive', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'unmature', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'unmature', $site_args, 'manage_sites' );
 
-		$this->register_route( ['POST'], 'unspam', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'unspam', $site_args, 'manage_sites' );
 
 	}
 

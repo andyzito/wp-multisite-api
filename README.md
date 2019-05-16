@@ -1,8 +1,8 @@
 # Multisite API #
-**Contributors:** Andrew Zito, Lafayette College ITS  
-**Requires at least:** 4.7  
-**License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**Contributors:** Andrew Zito, Lafayette College ITS
+**Requires at least:** 4.7
+**License:** GPLv2 or later
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin extends the REST API to allow management of sites in a multisite network.
 
@@ -15,11 +15,13 @@ This plugin extends the REST API to allow management of sites in a multisite net
 1. Upload the `multisite-api` folder to `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
-## API ##
+## Usage ##
 
-This plugin supports all of the same commands as the WP-CLI site command, with the exception of switch-language.
+This plugin supports a subset of the commands of the [WP-CLI site command](https://developer.wordpress.org/cli/commands/site/). It does not currently support the `empty`, `meta`, and `option` commands.
 
-### `activate` ###
+The URL path looks like: `https://www.example.com/wp-json/multisite/v2/[command]?[params]`
+
+### `activate [PATCH]` ###
 
 | parameter | type   | default | description                  |
 |-----------|--------|---------|------------------------------|
@@ -28,7 +30,7 @@ This plugin supports all of the same commands as the WP-CLI site command, with t
 
 Activates a site.
 
-### `archive` ###
+### `archive [PATCH]` ###
 
 | parameter | type   | default | description                 |
 |-----------|--------|---------|-----------------------------|
@@ -37,7 +39,7 @@ Activates a site.
 
 Archives a site.
 
-### `create` ###
+### `create [POST]` ###
 
 | parameter | type       | default | description                                    |
 |-----------|------------|---------|------------------------------------------------|
@@ -47,7 +49,7 @@ Archives a site.
 
 Creates a new site.
 
-### `deactivate` ###
+### `deactivate [PATCH]` ###
 
 | parameter | type   | default | description                    |
 |-----------|--------|---------|--------------------------------|
@@ -56,7 +58,7 @@ Creates a new site.
 
 Deactivates a site.
 
-### `archive` ###
+### `archive [PATCH]` ###
 
 | parameter | type   | default | description                 |
 |-----------|--------|---------|-----------------------------|
@@ -65,7 +67,7 @@ Deactivates a site.
 
 Archives a site.
 
-### `delete` ###
+### `delete [DELETE]` ###
 
 | parameter   | type   | default | description                              |
 |-------------|--------|---------|------------------------------------------|
@@ -75,7 +77,7 @@ Archives a site.
 
 Deletes a site.
 
-### `list` ###
+### `list [GET]` ###
 
 | parameter | type   | default | description                                                                                |
 |-----------|--------|---------|--------------------------------------------------------------------------------------------|
@@ -88,7 +90,7 @@ The filter system is currently extremely simplistic -- it accepts only one key/v
 
 You can also specify fields to return. For example, '`blog_id,siteurl`' will return an array of objects with the `blog_id` and `siteurl` properties. Specifying a single field will return a flat array.
 
-### `mature` ###
+### `mature [PATCH]` ###
 
 | parameter | type   | default | description                        |
 |-----------|--------|---------|------------------------------------|
@@ -97,7 +99,7 @@ You can also specify fields to return. For example, '`blog_id,siteurl`' will ret
 
 Marks a site as mature.
 
-### `private` ###
+### `private [PATCH]` ###
 
 | parameter | type   | default | description                         |
 |-----------|--------|---------|-------------------------------------|
@@ -106,7 +108,7 @@ Marks a site as mature.
 
 Marks a site as private.
 
-### `public` ###
+### `public [PATCH]` ###
 
 | parameter | type   | default | description                        |
 |-----------|--------|---------|------------------------------------|
@@ -115,7 +117,7 @@ Marks a site as private.
 
 Marks a site as public.
 
-### `spam` ###
+### `spam [PATCH]` ###
 
 | parameter | type   | default | description                      |
 |-----------|--------|---------|----------------------------------|
@@ -124,7 +126,7 @@ Marks a site as public.
 
 Marks a site as spam.
 
-### `unarchive` ###
+### `unarchive [PATCH]` ###
 
 | parameter | type   | default | description                   |
 |-----------|--------|---------|-------------------------------|
@@ -133,7 +135,7 @@ Marks a site as spam.
 
 Unarchives a site.
 
-### `unmature` ###
+### `unmature [PATCH]` ###
 
 | parameter | type   | default | description                          |
 |-----------|--------|---------|--------------------------------------|
@@ -142,7 +144,7 @@ Unarchives a site.
 
 Marks a site as unmature.
 
-### `unspam` ###
+### `unspam [PATCH]` ###
 
 | parameter | type   | default | description                        |
 |-----------|--------|---------|------------------------------------|

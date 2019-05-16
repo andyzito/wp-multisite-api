@@ -2,15 +2,10 @@
 
 // This file can be used to manually spot-check this API. DO NOT USE THIS AGAINST A PRODUCTION SERVER, OBVIOUSLY.
 
-function Call( $path, $data = array(), $post = 1 ) {
+function Call( $path, $data = array(), $method = 'POST' ) {
   $curl = curl_init();
 
-  if ($post) {
-    curl_setopt($curl, CURLOPT_POST, 1);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-  } else {
-    curl_setopt($curl, CURLOPT_HTTPGET, 1);
-  }
+  curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
 
   // Authentication: Basic
   // This is user/pass auth, and again, SHOULD NOT BE USED IN A PRODUCTION SIUATION.
@@ -19,7 +14,8 @@ function Call( $path, $data = array(), $post = 1 ) {
   curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
   curl_setopt($curl, CURLOPT_USERPWD, "user:password");
 
-  curl_setopt($curl, CURLOPT_URL, 'localhost/wp-json/multisite/v2/' . $path );
+  $params = http_build_query($data);
+  curl_setopt($curl, CURLOPT_URL, 'localhost/wp-json/multisite/v2/' . $path . '?' . $params  );
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
   $result = curl_exec($curl);
@@ -31,14 +27,14 @@ function Call( $path, $data = array(), $post = 1 ) {
 
 // List sites data
 echo ">> Listing all sites:\n";
-$response = Call( 'list', [], 0 );
+$response = Call( 'list', [], 'GET' );
 print_r($response);
 echo "\n-------------------------------\n\n";
 
 echo ">> Listing all sites, limited fields:\n";
 $response = Call( 'list', [
   'fields' => 'blog_id,path,registered'
-], 0);
+], 'GET' );
 print_r($response);
 echo "\n-------------------------------\n\n";
 
@@ -80,7 +76,7 @@ $cmds = array(
 foreach ( $cmds as $cmd ) {
   $response = Call( $cmd, [
     'slug' => $slug,
-  ] );
+  ], 'PATCH' );
   echo $response . "\n";
 }
 echo "\n-------------------------------\n\n";
@@ -89,6 +85,6 @@ echo "\n-------------------------------\n\n";
 echo ">> Deleting the site:\n";
 $response = Call( 'delete', [
   'slug' => $slug,
-]);
+], 'DELETE' );
 print_r($response);
 echo "\n-------------------------------\n\n";
