@@ -1,8 +1,8 @@
 # Multisite API #
-**Contributors:** Andrew Zito, Lafayette College ITS
-**Requires at least:** 4.7
-**License:** GPLv2 or later
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+**Contributors:** Andrew Zito, Lafayette College ITS  
+**Requires at least:** 4.7  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
 This plugin extends the REST API to allow management of sites in a multisite network.
 
