@@ -137,12 +137,13 @@ class Multisite_API_Controller {
 	 * @return void
 	 */
 	private function register_route( array $methods, string $name, array $args, string $capability ) {
+		$fnname = str_replace( '/', '_', $name );
 		register_rest_route(
 			$this->namespace,
 			"/$name/",
 			array(
 				'methods'  => $methods,
-				'callback' => array( $this, "command_$name" ),
+				'callback' => array( $this, "command_$fnname" ),
 				'args'     => array_merge( $args ),
 				'permission_callback' => function () use ($capability) {
 					return current_user_can( $capability );
@@ -216,7 +217,13 @@ class Multisite_API_Controller {
 
 		$this->register_route( ['POST'], 'mature', $site_args, 'manage_sites' );
 
-		// TODO $this->register_route( 'meta', $site_args );
+		$this->register_route( ['POST'], 'meta/add', $site_args, 'manage_sites' );
+		$this->register_route( ['DELETE'], 'meta/delete', $site_args, 'manage_sites' );
+		$this->register_route( ['GET'], 'meta/get', $site_args, 'manage_sites' );
+		$this->register_route( ['GET'], 'meta/list', $site_args, 'manage_sites' );
+		$this->register_route( ['PATCH'], 'meta/patch', $site_args, 'manage_sites' );
+		$this->register_route( ['GET'], 'meta/pluck', $site_args, 'manage_sites' );
+		$this->register_route( ['PUT'], 'meta/update', $site_args, 'manage_sites' );
 
 		// TODO $this->register_route( 'option', $site_args );
 
@@ -433,6 +440,55 @@ class Multisite_API_Controller {
 		$site   = $this->extract_site( $params );
 
 		$this->update_site_status( $site, 'mature', 1 );
+		exit;
+	}
+
+	public function command_meta_add( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_delete( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_get( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_list( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_patch( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_pluck( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
+		exit;
+	}
+
+	public function command_meta_update( WP_REST_Request $request ) {
+		$params = $request->get_params();
+		$site   = $this->extract_site( $params );
+
 		exit;
 	}
 
