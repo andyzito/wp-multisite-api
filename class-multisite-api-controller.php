@@ -401,7 +401,7 @@ class Multisite_API_Controller {
 				);
 			} else {
 				$sites = array_map(
-					function( object $s ) use ( $fields ) {
+					function( $s ) use ( $fields ) {
 						$new = new stdClass();
 						foreach ( $fields as $field ) {
 							$new->{$field} = $s->{$field};
