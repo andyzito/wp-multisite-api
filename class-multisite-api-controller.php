@@ -129,19 +129,19 @@ class Multisite_API_Controller {
 	 * This is a convenience function to handle bits of the REST route registration
 	 * that are frequently repeated.
 	 *
-	 * @param string $method POST or GET.
+	 * @param string $method HTTP methods.
 	 * @param string $name Name of the route, used for the path and the callback.
 	 * @param array  $baseargs The set of arguments to register for the route.
 	 * @param string $capability The capability required to use this route.
 	 *
 	 * @return void
 	 */
-	private function register_route( string $method, string $name, array $args, string $capability ) {
+	private function register_route( array $methods, string $name, array $args, string $capability ) {
 		register_rest_route(
 			$this->namespace,
 			"/$name/",
 			array(
-				'methods'  => $method,
+				'methods'  => $methods,
 				'callback' => array( $this, "command_$name" ),
 				'args'     => array_merge( $args ),
 				'permission_callback' => function () use ($capability) {
@@ -166,12 +166,12 @@ class Multisite_API_Controller {
 			),
 		);
 
-		$this->register_route( 'POST', 'activate', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'activate', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'archive', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'archive', $site_args, 'manage_sites' );
 
 		$this->register_route(
-			'POST',
+			['POST'],
 			'create',
 			array_merge( $site_args,
 				array(
@@ -183,10 +183,10 @@ class Multisite_API_Controller {
 			'create_sites'
 		);
 
-		$this->register_route( 'POST', 'deactivate', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'deactivate', $site_args, 'manage_sites' );
 
 		$this->register_route(
-			'POST',
+			['POST'],
 			'delete',
 			array_merge( $site_args,
 				array(
@@ -201,7 +201,7 @@ class Multisite_API_Controller {
 		// TODO $this->register_route(  'empty', $site_args );
 
 		$this->register_route(
-			'GET',
+			['GET'],
 			'list',
 			array(
 				'fields' => array(
@@ -214,23 +214,23 @@ class Multisite_API_Controller {
 			'manage_sites'
 		);
 
-		$this->register_route( 'POST', 'mature', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'mature', $site_args, 'manage_sites' );
 
 		// TODO $this->register_route( 'meta', $site_args );
 
 		// TODO $this->register_route( 'option', $site_args );
 
-		$this->register_route( 'POST', 'private', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'private', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'public', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'public', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'spam', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'spam', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'unarchive', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'unarchive', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'unmature', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'unmature', $site_args, 'manage_sites' );
 
-		$this->register_route( 'POST', 'unspam', $site_args, 'manage_sites' );
+		$this->register_route( ['POST'], 'unspam', $site_args, 'manage_sites' );
 
 	}
 
