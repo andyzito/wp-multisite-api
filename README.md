@@ -1,14 +1,16 @@
 # Multisite API #
-**Contributors:** Andrew Zito, Lafayette College ITS  
-**Requires at least:** 4.7  
-**License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**Contributors:** Andrew Zito, Lafayette College ITS
+**Requires at least:** 4.7
+**License:** GPLv2 or later
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin extends the REST API to allow management of sites in a multisite network.
 
 ## Description ##
 
-This plugin extends the REST API to allow management of sites in a multisite network.
+This plugin extends the REST API to allow management of sites in a multisite network. It is currently in limbo; we ultimately pivoted away from the original use case for this functionality, and as a result the final stages of development on this plugin were deprioritized.
+
+The remaining work is mostly the publishing of the plugin to the WordPress repository (and checking for any errors caused by drift in core wp-cli). This work will be completed in my hypothetical free time, prior to the heat death of the universe.
 
 ## Installation ##
 
